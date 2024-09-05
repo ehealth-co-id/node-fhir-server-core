@@ -18,7 +18,7 @@ const uniques = (list) => list.filter((val, index, self) => val && self.indexOf(
 let deprecatedLogger = deprecate(
   container.get('default'),
   'Using the logger this way is deprecated. Please see the documentation on ' +
-    'BREAKING CHANGES in version 2.0.0 for instructions on how to upgrade.'
+  'BREAKING CHANGES in version 2.0.0 for instructions on how to upgrade.'
 );
 
 /**
@@ -242,8 +242,8 @@ function enableResourceRoutes(app, config, corsDefaults) {
     } catch (err) {
       throw new Error(
         `${profileName} is an invalid profile configuration, please see the wiki for ` +
-          'instructions on how to enable a profile in your server, ' +
-          'https://github.com/Asymmetrik/node-fhir-server-core/wiki/Profile'
+        'instructions on how to enable a profile in your server, ' +
+        'https://github.com/Asymmetrik/node-fhir-server-core/wiki/Profile'
       );
     }
 
@@ -329,24 +329,24 @@ function enableResourceRoutes(app, config, corsDefaults) {
 function enableBaseRoute(app, config, corsDefaults) {
   // Determine which versions need a base endpoint, we need to loop through
   // all the configured profiles and find all the uniquely provided versions
-  let routes = require('./base/base.config');
-  for (let i; routes.length; i++) {
+  let { routes } = require('./base/base.config');
+  for (let route of routes) {
     let versionValidationConfiguration = {
       versions: getAllConfiguredVersions(config.profiles),
     };
     let corsOptions = Object.assign({}, corsDefaults, {
-      methods: [routes[i].type.toUpperCase()],
+      methods: [route.type.toUpperCase()],
     });
 
     // Enable cors with preflight
-    app.options(routes[i].path, cors(corsOptions));
+    app.options(route.path, cors(corsOptions));
     // Enable base route
-    app[routes[i].type](
-      routes[i].path,
+    app[route.type](
+      route.path,
       cors(corsOptions),
       versionValidationMiddleware(versionValidationConfiguration),
-      sanitizeMiddleware(routes[i].args),
-      routes[i].controller({ config })
+      sanitizeMiddleware(route.args),
+      route.controller({ config })
     );
   }
 }
